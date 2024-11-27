@@ -24,7 +24,7 @@ function inicializarPlacas(tipo) {
             } else if (tipo === "placas-preventiva") {
                 cadastrarPreventiva(placa);
             } else if (tipo === "placas-status") {
-                mostrarStatusPreventivaPorPlaca(placa); // Função corrigida
+                mostrarStatusPreventivaPorPlaca(placa); // Correção aqui
             }
         };
         placasDiv.appendChild(button);
