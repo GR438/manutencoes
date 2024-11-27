@@ -162,9 +162,12 @@ function mostrarStatusPreventivaPorPlaca(placa) {
         encerrarButton.classList.add("manutencao-button");
         encerrarButton.innerText = "Encerrar Preventiva";
         encerrarButton.onclick = () => {
-            preventivas[placa].splice(index, 1); // Remove a preventiva da lista
+            // Remove a preventiva da lista
+            preventivas[placa].splice(index, 1);
             localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
-            mostrarStatusPreventivaPorPlaca(placa); // Atualiza a lista
+
+            // Atualiza a tela, mostrando as preventivas restantes
+            mostrarStatusPreventivaPorPlaca(placa);
         };
         statusDiv.appendChild(encerrarButton);
     });
@@ -172,6 +175,7 @@ function mostrarStatusPreventivaPorPlaca(placa) {
     document.getElementById("placas-status").innerHTML = "";
     document.getElementById("placas-status").appendChild(statusDiv);
 }
+
 
 
 
