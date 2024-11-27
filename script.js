@@ -24,12 +24,13 @@ function inicializarPlacas(tipo) {
             } else if (tipo === "placas-preventiva") {
                 cadastrarPreventiva(placa);
             } else if (tipo === "placas-status") {
-                mostrarStatusPreventiva(placa);
+                mostrarStatusPreventivaPorPlaca(placa);  // Corrigir a chamada da função aqui
             }
         };
         placasDiv.appendChild(button);
     });
 }
+
 
 // Função para exibir tela inicial de manutenção corretiva
 function entrarCorretiva() {
@@ -68,8 +69,9 @@ function mostrarCadastrarPreventiva() {
 function mostrarStatusPreventiva() {
     document.getElementById("tela-opcoes-preventiva").style.display = "none";
     document.getElementById("status-preventiva").style.display = "block";
-    inicializarPlacas("placas-status");
+    inicializarPlacas("placas-status");  // Inicializa as placas com o evento correto
 }
+
 
 // Função para voltar para a tela inicial
 function voltarParaTelaInicial() {
@@ -146,8 +148,8 @@ function cadastrarPreventiva(placa) {
     }
 }
 
-// Função para mostrar as preventivas cadastradas
-function mostrarStatusPreventivaporplaca(placa) {
+// Função para mostrar as preventivas cadastradas de uma placa
+function mostrarStatusPreventivaPorPlaca(placa) {
     const statusDiv = document.createElement("div");
     statusDiv.classList.add("preventiva-list");
 
@@ -161,6 +163,7 @@ function mostrarStatusPreventivaporplaca(placa) {
     document.getElementById("placas-status").innerHTML = "";
     document.getElementById("placas-status").appendChild(statusDiv);
 }
+
 
 
 
