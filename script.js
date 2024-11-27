@@ -152,15 +152,27 @@ function mostrarStatusPreventivaPorPlaca(placa) {
     statusDiv.classList.add("preventiva-list");
 
     const preventivasPlaca = preventivas[placa] || [];
-    preventivasPlaca.forEach(preventivaItem => {
+    preventivasPlaca.forEach((preventivaItem, index) => {
         const p = document.createElement("p");
         p.innerText = `Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima}`;
         statusDiv.appendChild(p);
+
+        // Botão para encerrar a preventiva
+        const encerrarButton = document.createElement("button");
+        encerrarButton.classList.add("manutencao-button");
+        encerrarButton.innerText = "Encerrar Preventiva";
+        encerrarButton.onclick = () => {
+            preventivas[placa].splice(index, 1); // Remove a preventiva da lista
+            localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
+            mostrarStatusPreventivaPorPlaca(placa); // Atualiza a lista
+        };
+        statusDiv.appendChild(encerrarButton);
     });
 
     document.getElementById("placas-status").innerHTML = "";
     document.getElementById("placas-status").appendChild(statusDiv);
 }
+
 
 
 
