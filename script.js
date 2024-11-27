@@ -24,41 +24,110 @@ function inicializarPlacas(tipo) {
             } else if (tipo === "placas-preventiva") {
                 cadastrarPreventiva(placa);
             } else if (tipo === "placas-status") {
-                mostrarStatusPreventivaPorPlaca(placa); // Correção aqui
+                mostrarStatusPreventivaPorPlaca(placa); // Função corrigida
             }
         };
         placasDiv.appendChild(button);
     });
 }
 
-// Função para mostrar o status das preventivas de uma placa
-function mostrarStatusPreventivaPorPlaca(placa) {
-    const statusDiv = document.createElement("div");
-    statusDiv.classList.add("preventiva-list");
+// Função para exibir tela inicial de manutenção corretiva
+function entrarCorretiva() {
+    document.getElementById("tela-inicial").style.display = "none";
+    document.getElementById("tela-opcoes-corretiva").style.display = "block";
+}
 
-    const preventivasPlaca = preventivas[placa] || [];
-    preventivasPlaca.forEach((preventivaItem, index) => {
+// Função para exibir tela inicial de manutenção preventiva
+function entrarPreventiva() {
+    document.getElementById("tela-inicial").style.display = "none";
+    document.getElementById("tela-opcoes-preventiva").style.display = "block";
+}
+
+// Função para mostrar as manutenções pendentes
+function mostrarManutencaoPendentes() {
+    document.getElementById("tela-opcoes-corretiva").style.display = "none";
+    document.getElementById("manutencao-pendentes").style.display = "block";
+    inicializarPlacas("placas-pendentes");
+}
+
+// Função para mostrar o formulário de cadastro
+function mostrarCadastrarManutencao() {
+    document.getElementById("tela-opcoes-corretiva").style.display = "none";
+    document.getElementById("cadastrar-manutencao").style.display = "block";
+    inicializarPlacas("placas-cadastro");
+}
+
+// Função para mostrar tela de cadastro preventiva
+function mostrarCadastrarPreventiva() {
+    document.getElementById("tela-opcoes-preventiva").style.display = "none";
+    document.getElementById("cadastrar-preventiva").style.display = "block";
+    inicializarPlacas("placas-preventiva");
+}
+
+// Função para mostrar status da preventiva
+function mostrarStatusPreventiva() {
+    document.getElementById("tela-opcoes-preventiva").style.display = "none";
+    document.getElementById("status-preventiva").style.display = "block";
+    inicializarPlacas("placas-status");
+}
+
+// Função para voltar para a tela inicial
+function voltarParaTelaInicial() {
+    document.getElementById("tela-inicial").style.display = "block";
+    document.getElementById("tela-opcoes-corretiva").style.display = "none";
+    document.getElementById("tela-opcoes-preventiva").style.display = "none";
+}
+
+// Função para voltar para a tela de opções corretiva
+function voltarParaOpcoesCorretiva() {
+    document.getElementById("manutencao-pendentes").style.display = "none";
+    document.getElementById("cadastrar-manutencao").style.display = "none";
+    document.getElementById("tela-opcoes-corretiva").style.display = "block";
+}
+
+// Função para voltar para a tela de opções preventiva
+function voltarParaOpcoesPreventiva() {
+    document.getElementById("cadastrar-preventiva").style.display = "none";
+    document.getElementById("status-preventiva").style.display = "none";
+    document.getElementById("tela-opcoes-preventiva").style.display = "block";
+}
+
+// Função para cadastrar uma manutenção
+function cadastrarManutencao(placa) {
+    const manutencaoDescricao = prompt("Cadastre a nova manutenção para " + placa);
+    if (manutencaoDescricao) {
+        if (!manutencoes[placa]) {
+            manutencoes[placa] = [];
+        }
+        manutencoes[placa].push(manutencaoDescricao);
+        localStorage.setItem("manutencoes", JSON.stringify(manutencoes));
+        alert("Manutenção cadastrada com sucesso!");
+    }
+}
+
+// Função para mostrar as manutenções de uma placa
+function mostrarManutencaoPorPlaca(placa) {
+    const manutencaoList = document.createElement("div");
+    manutencaoList.classList.add("manutencao-list");
+
+    const manutencao = manutencoes[placa] || [];
+    manutencao.forEach((manutencaoItem, index) => {
         const p = document.createElement("p");
-        p.innerText = `Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima}`;
-        statusDiv.appendChild(p);
-
-        // Botão para encerrar a preventiva
+        p.innerText = manutencaoItem;
         const concluirButton = document.createElement("button");
         concluirButton.classList.add("manutencao-button");
-        concluirButton.innerText = "Encerrar Preventiva";
+        concluirButton.innerText = "Concluir Manutenção";
         concluirButton.onclick = () => {
-            // Remove a preventiva da lista
-            preventivas[placa].splice(index, 1);
-            localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
-
-            // Atualiza a tela, mostrando as preventivas restantes
-            mostrarStatusPreventivaPorPlaca(placa);
+            manutencoes[placa].splice(index, 1); // Remove a manutenção da lista
+            localStorage.setItem("manutencoes", JSON.stringify(manutencoes)); // Atualiza no localStorage
+            mostrarManutencaoPorPlaca(placa); // Atualiza a lista
         };
-        statusDiv.appendChild(concluirButton); // Corrigido para usar concluirButton
+        manutencaoList.appendChild(p);
+        manutencaoList.appendChild(concluirButton);
     });
 
-    document.getElementById("placas-status").innerHTML = "";
-    document.getElementById("placas-status").appendChild(statusDiv);
+    document.getElementById("placas-pendentes").innerHTML = "";
+    document.getElementById("placas-pendentes").appendChild(manutencaoList);
 }
 
 // Função para cadastrar manutenção preventiva
@@ -76,6 +145,46 @@ function cadastrarPreventiva(placa) {
         alert("Preventiva cadastrada com sucesso!");
     }
 }
+
+// Função para mostrar o status das preventivas de uma placa
+function mostrarStatusPreventivaPorPlaca(placa) {
+    const statusDiv = document.createElement("div");
+    statusDiv.classList.add("preventiva-list");
+
+    const preventivasPlaca = preventivas[placa] || [];
+
+    // Verifica se a placa tem preventivas cadastradas
+    if (preventivasPlaca.length === 0) {
+        const mensagem = document.createElement("p");
+        mensagem.innerText = `Não há preventivas cadastradas para a placa ${placa}.`;
+        statusDiv.appendChild(mensagem);
+    } else {
+        preventivasPlaca.forEach((preventivaItem, index) => {
+            const p = document.createElement("p");
+            p.innerText = `Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima}`;
+            statusDiv.appendChild(p);
+
+            // Botão para encerrar a preventiva
+            const concluirButton = document.createElement("button");
+            concluirButton.classList.add("manutencao-button");
+            concluirButton.innerText = "Encerrar Preventiva";
+            concluirButton.onclick = () => {
+                // Remove a preventiva da lista
+                preventivas[placa].splice(index, 1);
+                localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
+
+                // Atualiza a tela, mostrando as preventivas restantes
+                mostrarStatusPreventivaPorPlaca(placa);
+            };
+            statusDiv.appendChild(concluirButton); // Adiciona o botão para encerrar
+        });
+    }
+
+    // Atualiza a div com as preventivas
+    document.getElementById("placas-status").innerHTML = "";
+    document.getElementById("placas-status").appendChild(statusDiv);
+}
+
 
 
 
