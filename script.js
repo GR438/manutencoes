@@ -158,10 +158,10 @@ function mostrarStatusPreventivaPorPlaca(placa) {
         statusDiv.appendChild(p);
 
         // Botão para encerrar a preventiva
-        const encerrarButton = document.createElement("button");
-        encerrarButton.classList.add("manutencao-button");
-        encerrarButton.innerText = "Encerrar Preventiva";
-        encerrarButton.onclick = () => {
+        const concluirButton = document.createElement("button");
+        concluirButton.classList.add("manutencao-button");
+        concluirButton.innerText = "Encerrar Preventiva";
+        concluirButton.onclick = () => {
             // Remove a preventiva da lista
             preventivas[placa].splice(index, 1);
             localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
