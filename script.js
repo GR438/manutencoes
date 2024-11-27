@@ -1,6 +1,6 @@
 // Importando as funções necessárias do Firebase
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDocs, query, where, doc, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
 
 // Sua configuração do Firebase
 const firebaseConfig = {
@@ -23,10 +23,10 @@ const placas = [
     "PMX0879", "OSU4375", "OSU4025", "NUX8074", "HWX4232", "HWX4222", "HWK8419"
 ];
 
-// Função para inicializar placas para cada tela
+// Função para inicializar placas em cada tela
 function inicializarPlacas(tipo) {
     const placasDiv = document.getElementById(tipo);
-    placasDiv.innerHTML = "";
+    placasDiv.innerHTML = "";  // Limpa a div antes de adicionar os botões
     placas.forEach(placa => {
         const button = document.createElement("button");
         button.innerText = placa;
@@ -39,7 +39,7 @@ function inicializarPlacas(tipo) {
             } else if (tipo === "placas-preventiva") {
                 cadastrarPreventiva(placa);
             } else if (tipo === "placas-status") {
-                mostrarStatusPreventivaPorPlaca(placa); // Função corrigida
+                mostrarStatusPreventivaPorPlaca(placa);
             }
         };
         placasDiv.appendChild(button);
@@ -129,11 +129,35 @@ async function mostrarStatusPreventivaPorPlaca(placa) {
     document.getElementById("placas-status").appendChild(statusList);
 }
 
-// Exemplo para ir de uma tela para outra
+// Funções para navegação entre telas
 function entrarCorretiva() {
     document.getElementById("tela-inicial").style.display = "none";
     document.getElementById("tela-opcoes-corretiva").style.display = "block";
     inicializarPlacas("placas-pendentes"); // Inicializa as placas
+}
+
+function entrarPreventiva() {
+    document.getElementById("tela-inicial").style.display = "none";
+    document.getElementById("tela-opcoes-preventiva").style.display = "block";
+    inicializarPlacas("placas-preventiva"); // Inicializa as placas
+}
+
+function voltarParaTelaInicial() {
+    document.getElementById("tela-inicial").style.display = "block";
+    document.getElementById("tela-opcoes-corretiva").style.display = "none";
+    document.getElementById("tela-opcoes-preventiva").style.display = "none";
+}
+
+function voltarParaOpcoesCorretiva() {
+    document.getElementById("tela-opcoes-corretiva").style.display = "block";
+    document.getElementById("manutencao-pendentes").style.display = "none";
+    document.getElementById("cadastrar-manutencao").style.display = "none";
+}
+
+function voltarParaOpcoesPreventiva() {
+    document.getElementById("tela-opcoes-preventiva").style.display = "block";
+    document.getElementById("cadastrar-preventiva").style.display = "none";
+    document.getElementById("status-preventiva").style.display = "none";
 }
 
 
