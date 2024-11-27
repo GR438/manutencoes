@@ -146,41 +146,32 @@ function cadastrarPreventiva(placa) {
     }
 }
 
-// Função para mostrar o status das preventivas de uma placa
+// Função para mostrar as preventivas cadastradas de uma placa
 function mostrarStatusPreventivaPorPlaca(placa) {
     const statusDiv = document.createElement("div");
     statusDiv.classList.add("preventiva-list");
 
     const preventivasPlaca = preventivas[placa] || [];
+    preventivasPlaca.forEach((preventivaItem, index) => {
+        const p = document.createElement("p");
+        p.innerText = Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima};
+        statusDiv.appendChild(p);
 
-    // Verifica se a placa tem preventivas cadastradas
-    if (preventivasPlaca.length === 0) {
-        const mensagem = document.createElement("p");
-        mensagem.innerText = `Não há preventivas cadastradas para a placa ${placa}.`;
-        statusDiv.appendChild(mensagem);
-    } else {
-        preventivasPlaca.forEach((preventivaItem, index) => {
-            const p = document.createElement("p");
-            p.innerText = `Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima}`;
-            statusDiv.appendChild(p);
+        // Botão para encerrar a preventiva
+        const concluirButton = document.createElement("button");
+        concluirButton.classList.add("manutencao-button");
+        concluirButton.innerText = "Encerrar Preventiva";
+        concluirButton.onclick = () => {
+            // Remove a preventiva da lista
+            preventivas[placa].splice(index, 1);
+            localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
 
-            // Botão para encerrar a preventiva
-            const concluirButton = document.createElement("button");
-            concluirButton.classList.add("manutencao-button");
-            concluirButton.innerText = "Encerrar Preventiva";
-            concluirButton.onclick = () => {
-                // Remove a preventiva da lista
-                preventivas[placa].splice(index, 1);
-                localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
+            // Atualiza a tela, mostrando as preventivas restantes
+            mostrarStatusPreventivaPorPlaca(placa);
+        };
+        statusDiv.appendChild(encerrarButton);
+    });
 
-                // Atualiza a tela, mostrando as preventivas restantes
-                mostrarStatusPreventivaPorPlaca(placa);
-            };
-            statusDiv.appendChild(concluirButton); // Adiciona o botão para encerrar
-        });
-    }
-
-    // Atualiza a div com as preventivas
     document.getElementById("placas-status").innerHTML = "";
     document.getElementById("placas-status").appendChild(statusDiv);
 }
