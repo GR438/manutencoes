@@ -24,7 +24,7 @@ function inicializarPlacas(tipo) {
             } else if (tipo === "placas-preventiva") {
                 cadastrarPreventiva(placa);
             } else if (tipo === "placas-status") {
-                mostrarStatusPreventivaPorPlaca(placa); // Correção aqui
+                mostrarStatusPreventivaPorPlaca(placa); // Função corrigida
             }
         };
         placasDiv.appendChild(button);
@@ -76,6 +76,10 @@ function voltarParaTelaInicial() {
     document.getElementById("tela-inicial").style.display = "block";
     document.getElementById("tela-opcoes-corretiva").style.display = "none";
     document.getElementById("tela-opcoes-preventiva").style.display = "none";
+    document.getElementById("manutencao-pendentes").style.display = "none";
+    document.getElementById("cadastrar-manutencao").style.display = "none";
+    document.getElementById("cadastrar-preventiva").style.display = "none";
+    document.getElementById("status-preventiva").style.display = "none";
 }
 
 // Função para voltar para a tela de opções corretiva
@@ -146,35 +150,45 @@ function cadastrarPreventiva(placa) {
     }
 }
 
-// Função para mostrar as preventivas cadastradas de uma placa
+// Função para mostrar o status das preventivas de uma placa
 function mostrarStatusPreventivaPorPlaca(placa) {
     const statusDiv = document.createElement("div");
     statusDiv.classList.add("preventiva-list");
 
     const preventivasPlaca = preventivas[placa] || [];
-    preventivasPlaca.forEach((preventivaItem, index) => {
-        const p = document.createElement("p");
-        p.innerText = Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima};
-        statusDiv.appendChild(p);
 
-        // Botão para encerrar a preventiva
-        const concluirButton = document.createElement("button");
-        concluirButton.classList.add("manutencao-button");
-        concluirButton.innerText = "Encerrar Preventiva";
-        concluirButton.onclick = () => {
-            // Remove a preventiva da lista
-            preventivas[placa].splice(index, 1);
-            localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
+    // Verifica se a placa tem preventivas cadastradas
+    if (preventivasPlaca.length === 0) {
+        const mensagem = document.createElement("p");
+        mensagem.innerText = `Não há preventivas cadastradas para a placa ${placa}.`;
+        statusDiv.appendChild(mensagem);
+    } else {
+        preventivasPlaca.forEach((preventivaItem, index) => {
+            const p = document.createElement("p");
+            p.innerText = `Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima}`;
+            statusDiv.appendChild(p);
 
-            // Atualiza a tela, mostrando as preventivas restantes
-            mostrarStatusPreventivaPorPlaca(placa);
-        };
-        statusDiv.appendChild(encerrarButton);
-    });
+            // Botão para encerrar a preventiva
+            const concluirButton = document.createElement("button");
+            concluirButton.classList.add("manutencao-button");
+            concluirButton.innerText = "Encerrar Preventiva";
+            concluirButton.onclick = () => {
+                // Remove a preventiva da lista
+                preventivas[placa].splice(index, 1);
+                localStorage.setItem("preventivas", JSON.stringify(preventivas)); // Atualiza no localStorage
 
+                // Atualiza a tela, mostrando as preventivas restantes
+                mostrarStatusPreventivaPorPlaca(placa);
+            };
+            statusDiv.appendChild(concluirButton); // Adiciona o botão para encerrar
+        });
+    }
+
+    // Atualiza a div com as preventivas
     document.getElementById("placas-status").innerHTML = "";
     document.getElementById("placas-status").appendChild(statusDiv);
 }
+
 
 
 
