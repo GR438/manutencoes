@@ -151,7 +151,7 @@ function mostrarStatusPreventivaporplaca(placa) {
     const statusDiv = document.createElement("div");
     statusDiv.classList.add("preventiva-list");
 
-    const preventivasList = preventivas[placa] || [];
+    const preventivas = preventivas[placa] || [];
     preventivas.forEach(preventivaItem => {
         const p = document.createElement("p");
         p.innerText = `Tipo: ${preventivaItem.tipo}, Data: ${preventivaItem.data}, Próxima: ${preventivaItem.proxima}`;
