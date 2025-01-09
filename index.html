@@ -3,64 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manutenções Frota Ypióca</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Visor de Mecânicos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f4f4f9;
+        }
+        header {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+        .form-section, .monitor-section {
+            margin-bottom: 30px;
+        }
+        .form-section h2, .monitor-section h2 {
+            margin-bottom: 15px;
+        }
+        .form-section input, .form-section button {
+            margin: 5px 0;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+        .form-section button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .form-section button:hover {
+            background-color: #0056b3;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 10px;
+        }
+        .table th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .dashboard {
+            display: none;
+        }
+        .button-group {
+            margin: 20px;
+        }
+        .button-group button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        .button-group .start-button {
+            background-color: #28a745;
+            color: white;
+        }
+        .button-group .visual-button {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <!-- Tela Inicial -->
-    <div id="tela-inicial">
-        <h1>Manutenções Frota Ypióca</h1>
-        <button onclick="entrarCorretiva()">Manutenção Corretiva</button>
-        <button onclick="entrarPreventiva()">Manutenção Preventiva</button>
+    <header>
+        <h1>Monitoramento de Mecânicos</h1>
+    </header>
+
+    <div class="button-group">
+        <button class="start-button" onclick="mostrarManutencao()">Start Manutenção</button>
+        <button class="visual-button" onclick="mostrarDashboard()">Visual</button>
     </div>
 
-    <!-- Tela de Opções - Manutenção Corretiva -->
-    <div id="tela-opcoes-corretiva" style="display:none;">
-        <h2>Escolha uma opção de Manutenção Corretiva</h2>
-        <button onclick="mostrarManutencaoPendentes()">Manutenções Pendentes</button>
-        <button onclick="mostrarCadastrarManutencao()">Cadastrar Manutenção</button>
-        <button onclick="voltarParaTelaInicial()">Voltar</button>
+    <div class="container" id="manutencao">
+
+        <!-- Cadastro de Ordens -->
+        <div class="form-section">
+            <h2>Cadastro de Ordem</h2>
+            <input type="text" id="ordemNumero" placeholder="Número da Ordem">
+            <input type="text" id="mecanicoNome" placeholder="Nome do Mecânico">
+            <input type="text" id="veiculo" placeholder="Veículo Relacionado">
+            <button onclick="iniciarOrdem()">Iniciar Ordem</button>
+        </div>
+
+        <!-- Monitoramento -->
+        <div class="monitor-section">
+            <h2>Status dos Mecânicos</h2>
+            <table class="table" id="monitorTable">
+                <thead>
+                    <tr>
+                        <th>Mecânico</th>
+                        <th>Ordem Atual</th>
+                        <th>Veículo</th>
+                        <th>Tempo Decorrido</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados serão adicionados dinamicamente aqui -->
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
-    <!-- Tela de Opções - Manutenção Preventiva -->
-    <div id="tela-opcoes-preventiva" style="display:none;">
-        <h2>Escolha uma opção de Manutenção Preventiva</h2>
-        <button onclick="mostrarCadastrarPreventiva()">Cadastrar Preventiva</button>
-        <button onclick="mostrarStatusPreventiva()">Status Preventiva</button>
-        <button onclick="voltarParaTelaInicial()">Voltar</button>
+    <div class="container dashboard" id="dashboard">
+        <h2>Dashboard</h2>
+        <p>Aqui você pode visualizar informações consolidadas sobre as ordens e os mecânicos.</p>
+        <!-- Adicione gráficos ou informações adicionais conforme necessário -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mecânico</th>
+                    <th>Total de Ordens</th>
+                    <th>Tempo Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dados do dashboard serão adicionados aqui dinamicamente -->
+            </tbody>
+        </table>
     </div>
 
-    <!-- Manutenções Pendentes -->
-    <div id="manutencao-pendentes" style="display:none;">
-        <h2>Manutenções Pendentes</h2>
-        <div id="placas-pendentes"></div>
-        <button onclick="voltarParaOpcoesCorretiva()">Voltar</button>
-    </div>
+    <script>
+        function mostrarManutencao() {
+            document.getElementById('manutencao').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+        }
 
-    <!-- Cadastrar Manutenção -->
-    <div id="cadastrar-manutencao" style="display:none;">
-        <h2>Cadastrar Manutenção</h2>
-        <div id="placas-cadastro"></div>
-        <button onclick="voltarParaOpcoesCorretiva()">Voltar</button>
-    </div>
+        function mostrarDashboard() {
+            document.getElementById('manutencao').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        }
 
-    <!-- Cadastrar Preventiva -->
-    <div id="cadastrar-preventiva" style="display:none;">
-        <h2>Cadastrar Manutenção Preventiva</h2>
-        <div id="placas-preventiva"></div>
-        <button onclick="voltarParaOpcoesPreventiva()">Voltar</button>
-    </div>
+        const ordensAtivas = [];
 
-    <!-- Status Preventiva -->
-    <div id="status-preventiva" style="display:none;">
-        <h2>Status Manutenções Preventivas</h2>
-        <div id="placas-status"></div>
-        <button onclick="voltarParaOpcoesPreventiva()">Voltar</button>
-    </div>
+        function iniciarOrdem() {
+            const ordemNumero = document.getElementById('ordemNumero').value;
+            const mecanicoNome = document.getElementById('mecanicoNome').value;
+            const veiculo = document.getElementById('veiculo').value;
 
-    <script src="script.js"></script>
+            if (!ordemNumero || !mecanicoNome || !veiculo) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            const ordem = {
+                numero: ordemNumero,
+                mecanico: mecanicoNome,
+                veiculo: veiculo,
+                inicio: new Date(),
+                intervalo: null
+            };
+
+            ordensAtivas.push(ordem);
+            atualizarTabela();
+        }
+
+        function finalizarOrdem(indice) {
+            ordensAtivas.splice(indice, 1);
+            atualizarTabela();
+        }
+
+        function atualizarTabela() {
+            const tabela = document.getElementById('monitorTable').querySelector('tbody');
+            tabela.innerHTML = '';
+
+            ordensAtivas.forEach((ordem, index) => {
+                const tempoDecorrido = calcularTempoDecorrido(ordem.inicio);
+
+                const row = `
+                    <tr>
+                        <td>${ordem.mecanico}</td>
+                        <td>${ordem.numero}</td>
+                        <td>${ordem.veiculo}</td>
+                        <td>${tempoDecorrido}</td>
+                        <td><button onclick="finalizarOrdem(${index})">Finalizar</button></td>
+                    </tr>
+                `;
+
+                tabela.innerHTML += row;
+            });
+        }
+
+        function calcularTempoDecorrido(inicio) {
+            const agora = new Date();
+            const diferenca = agora - inicio; // Diferença em milissegundos
+            const minutos = Math.floor(diferenca / 60000);
+            const segundos = Math.floor((diferenca % 60000) / 1000);
+            return `${minutos} min ${segundos} s`;
+        }
+
+        setInterval(atualizarTabela, 1000); // Atualiza a tabela a cada 1 segundo
+    </script>
 </body>
-</html>     
+</html>
+  
 
 
 
